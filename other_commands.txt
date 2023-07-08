@@ -1,0 +1,3 @@
+# replace originals with placeholders
+find . -name "*.ARW" -type f -exec bash -c 'echo  > "${0}"' {} \;
+find . -name "*.ORF" -type f -exec bash -c 'echo  > "${0}"' {} \;
