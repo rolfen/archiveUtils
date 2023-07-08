@@ -12,4 +12,4 @@ rclone copy b2ro:Droppit/ArchivePhoto/2021/04 /home/rolf/photo/archive/2021/04 -
 find . -name "*.ARW" -type f -exec bash -c 'echo  > "${0}"' {} \;
 find . -name "*.ORF" -type f -exec bash -c 'echo  > "${0}"' {} \;
 
-# goto step 1 until all files are copied (# step 1 returns after completing checks)
+# goto step 1 until all files are copied (rclone in step 1 returns after completing checks with 0 transfers)
