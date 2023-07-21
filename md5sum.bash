@@ -1,14 +1,14 @@
 #/bin/bash
 
-# limitations: does not support spaces in dirnames
-# requires exiftool
-
 scriptname=`basename "$0"`
+
+# limitations: does not support spaces in dirnames
+# requires exiftool and md5sum
 
 Help()
 {
    # Display Help
-   echo "Recursively extract previews from raw images"
+   echo "Recursively generate rawdigest exif property on targets from md5 sum of raw data"
    echo
    echo "Syntax: $scriptname [-s|d|h]"
    echo "options:"
@@ -50,9 +50,9 @@ for trgt in $(cd $srcdir && find . -type f \( -iname \*.ARW -o -iname \*.ORF \) 
 do
 	echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
 	mkdir -p `dirname $destdir/$trgt`
-	if [ ! -f "$destdir/$trgt.JPG" ]; then
-		cat $srcdir/$trgt | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > $destdir/$trgt.JPG
-		# exiftool  -m $srcdir/$trgt  -b -previewimage -ext ORF -ext ARW > $destdir/$trgt.JPG 
-		# exiftool  -overwrite_original -m -tagsfromfile $srcdir/$trgt "-all:all>all:all" $destdir/$trgt.JPG
-	fi
+	# if [ ! -f "$destdir/$trgt.JPG" ]; then
+		cat $srcdir/$trgt |exiftool -m -overwrite_original_in_place $destdir/$trgt.JPG -rawimagedigest=`exiftool - -all= -o - | md5sum`
+	# fi
 done;
+
+
