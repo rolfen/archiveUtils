@@ -1,6 +1,6 @@
-Just create a new folder in the collections folder and drop selected previews in there to create a collection.
+Just create a new folder in the collections folder and copy selected previews in there to create a new collection.
 
-Use a tool such as [LinkShellExtension](https://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html#contact) to create hardlinks or run a command periodically to replace duplicates with hardlinks, for ex:
+On windows, run a tool periodically to replace copies with hardlinks, for ex:
 
 ```
 finddupe.exe -hardlink -ref ./previews ./collections/
