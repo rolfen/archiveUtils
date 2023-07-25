@@ -55,6 +55,9 @@ do
          echo "Deleting partial output";
          failed=$((failed+1))
          rm "$destdir/$trgt.webm";
+	 echo "K bye."
+	 echo "Processed: $processed. Failed: $failed."
+	 exit
       else
          processed=$((processed+1))
       fi
