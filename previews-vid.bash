@@ -45,7 +45,7 @@ if [[ ! -v destdir ]];
 	read destdir
 fi
 
-for trgt in $(cd $srcdir && find . -type f \( -iname \*.MTS \) );
+for trgt in $(cd $srcdir && find . -type f \(  -size +1 -iname \*.MTS \) );
 do
 	echo "$srcdir/$trgt >> $destdir/$trgt.webm+txt" 
 	mkdir -p `dirname $destdir/$trgt`
