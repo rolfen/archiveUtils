@@ -4,6 +4,10 @@
 # requires exiftool
 
 scriptname=`basename "$0"`
+processed=0
+failed=0
+skipped=0
+
 
 Help()
 {
@@ -54,5 +58,14 @@ do
 		cat $srcdir/$trgt | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > $destdir/$trgt.JPG
 		# exiftool  -m $srcdir/$trgt  -b -previewimage -ext ORF -ext ARW > $destdir/$trgt.JPG 
 		# exiftool  -overwrite_original -m -tagsfromfile $srcdir/$trgt "-all:all>all:all" $destdir/$trgt.JPG
+      if [ $? -ne 0 ]; then
+         failed=$((failed+1))
+      else
+         processed=$((processed+1))
+      fi
+   else
+      skipped=$((skipped+1))
 	fi
 done;
+
+echo "Processed: $processed. Failed: $failed. Skipped: $skipped."
