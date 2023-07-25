@@ -56,7 +56,7 @@ if [[ ! -v destdir ]];
 	read destdir
 fi
 
-for trgt in $(cd $srcdir && find . -type f \( -iname \*.ARW -o -iname \*.ORF \) );
+for trgt in $(cd $srcdir && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) );
 do
    if [ $quiet -eq 1 ]; then
       echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
