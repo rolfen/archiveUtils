@@ -45,7 +45,7 @@ if [[ ! -v destdir ]];
 	read destdir
 fi
 
-for trgt in $(cd $srcdir && find . -type f \( -iname \*.MTS -o -iname \*.AVI -o -iname \*.MOV -o -iname \*.MP4 \) );
+for trgt in $(cd $srcdir && find . -type f \( -size +1  -iname \*.MTS -o -size +1 -iname \*.AVI -o -size +1 -iname \*.MOV -o -size +1 -iname \*.MP4 \) );
 do
 	echo "$srcdir/$trgt >> $destdir/$trgt.webm+txt" 
 	mkdir -p `dirname $destdir/$trgt`
