@@ -47,24 +47,23 @@ fi
 
 for trgt in $(cd $srcdir && find . -type f \( -size +1  -iname \*.MTS -o -size +1 -iname \*.AVI -o -size +1 -iname \*.MOV -o -size +1 -iname \*.MP4 \) );
 do
-	echo "$srcdir/$trgt >> $destdir/$trgt.webm+txt" 
-	mkdir -p `dirname $destdir/$trgt`
-	if [ ! -f "$destdir/$trgt.webm" ]; then
+   echo "$srcdir/$trgt >> $destdir/$trgt.webm+txt" 
+   mkdir -p `dirname $destdir/$trgt`
+   if [ ! -f "$destdir/$trgt.webm" ]; then
       ffmpeg -n -hide_banner -loglevel error -stats -vsync vfr -i $srcdir/$trgt -c:v libvpx-vp9 -row-mt 1 -deadline good -crf 36 -c:a libopus -b:a 32k -vf "fps=6,scale=420:-1" "$destdir/$trgt.webm" 
       if [ $? -ne 0 ]; then
-         echo "Deleting partial output";
-         failed=$((failed+1))
-         rm "$destdir/$trgt.webm";
-	 echo "K bye."
-	 echo "Processed: $processed. Failed: $failed."
-	 exit
+        echo "Deleting partial output";
+        failed=$((failed+1))
+        rm "$destdir/$trgt.webm";
+        echo "Processed: $processed. Failed: $failed."
+        exit
       else
-         processed=$((processed+1))
+        processed=$((processed+1))
       fi
    fi
    if [ ! -f "$destdir/$trgt.txt" ]; then
       exiftool -m "$srcdir/$trgt" > "$destdir/$trgt.txt"
-	fi
+   fi
 done;
 
 echo "Processed: $processed. Failed: $failed."
