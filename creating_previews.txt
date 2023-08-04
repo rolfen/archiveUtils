@@ -1,7 +1,7 @@
 # step 1
 # copy originals from b2 remote to local directory
-# Ex:
-rclone copy b2ro:Droppit/ArchivePhoto/2021/04 /home/rolf/photo/archive/2021/04 --progress --ignore-existing
+# Example:
+rclone copy b2ro:Droppit/ArchivePhoto/2021/04 /home/rolf/photo/archive/2021/04 --progress 
 
 # step 2
 # use previews.bash to extract previews from originals to another directory
