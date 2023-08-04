@@ -1,0 +1,3 @@
+# This is a nice way to extract exif as xml:
+
+exiftool -a -X -n ./2023/06/15/DSC00259.ARW
