@@ -29,6 +29,7 @@ while getopts "hs:d:t:" option; do
       s) remotedir=$OPTARG;;
       d) dstdir=$OPTARG;;
       t) tmpdir=$OPTARG;;
+      l) maxtransfer=$OPTARG;;
      \?) # Invalid option
          echo "Error: Invalid option"
          exit;;
