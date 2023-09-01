@@ -72,14 +72,14 @@ do
 	if [ $skip -eq 1 ]; then
       mkdir -p `dirname $destdir/$trgt`
       rawdigest=`exiftool -m "$srcdir/$trgt" -all= -o - | md5sum | cut -d ' ' -f 1`
-      if [ $? -ne 0 ]; then
+      if [ ${PIPESTATUS[0]} -ne 0 ]; then
          failed=$((failed+1))
          echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
          echo “Failure, press Ctrl-C to quit or any key to continue”
          read garbage
       else
          exiftool -m -overwrite_original_in_place "$destdir/$trgt.JPG" -rawimagedigest="$rawdigest"
-         if [ $? -ne 0 ]; then
+         if [ ${PIPESTATUS[0]} -ne 0 ]; then
             failed=$((failed+1))
             echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
             echo “Failure, press Ctrl-C to quit or any key to continue”
