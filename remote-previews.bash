@@ -48,8 +48,13 @@ if [ ! -z "$remotedir" ]; then
 	rclone copy $remotedir $tmpdir --progress --ignore-existing --max-transfer $maxtransfer
 fi
 
+echo "Previews"
 ./previews.bash -s $tmpdir -d $dstdir
-./previews-rawdigest.bash -c -s $tmpdir -d $dstdir
+echo "Raw digests"
+./previews-rawdigest.bash -q -c -s $tmpdir -d $dstdir
+echo "Truncating originals"
 find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 -exec bash -c 'echo  > "${0}"' {} \;
+echo "Video previews"
 ./previews-vid.bash -s $tmpdir -d $dstdir
+echo "Truncating original videos"
 find $tmpdir -type f \( -iname "*.MTS" -o -iname "*.AVI" -o -iname "*.MOV" -o -iname "*.MP4" \) -size +1 -exec bash -c 'echo  > "${0}"' {} \;

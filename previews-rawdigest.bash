@@ -6,6 +6,7 @@ quiet=1
 processed=0
 failed=0
 skipped=0
+exiftool_extra_parms=""
 
 # limitations: does not support spaces in dirnames
 
@@ -20,7 +21,7 @@ Help()
    echo " -s   Source dir"
    echo " -d   Destination dir"
    echo " -c   Skip targets that already have a checksum"
-   echo " -q   Quiet output"
+   echo " -q   Quiet/batch mode"
    echo " -h   Print this Help"
    echo
 }
@@ -37,7 +38,8 @@ while getopts "s:d:chq" option; do
          destdir=$OPTARG;;
       c) # "continue mode", skip targets which already have a checksum
          recalculate=1;;
-      q) quiet=0;;
+      q) exiftool_extra_parms=" -m -q -q "
+         quiet=0;;
      \?) # Invalid option
          echo "Error: Invalid option"
          exit;;
@@ -58,32 +60,36 @@ fi
 
 for trgt in $(cd $srcdir && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) );
 do
-   if [ $quiet -eq 1 ]; then
+   # if [ $quiet -eq 1 ]; then
       echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
-   fi
+   # fi
    skip=1
    if [ $recalculate -eq 1 ] && [ -f "$destdir/$trgt.JPG" ]; then
       # target present and recalculate is off: skip if we already have a checksum
-      if [ `exiftool -rawimagedigest $destdir/$trgt.JPG | wc -c` -gt 0 ]; then
+      if [ `exiftool $exiftool_extra_parms -rawimagedigest $destdir/$trgt.JPG | wc -c` -gt 0 ]; then
          skip=0
       fi
    fi
 
 	if [ $skip -eq 1 ]; then
       mkdir -p `dirname $destdir/$trgt`
-      rawdigest=$(exiftool -m "$srcdir/$trgt" -all= -o - | md5sum | cut -d ' ' -f 1 ; exit ${PIPESTATUS[0]})
-      if [ $? -ne 0 ]; then
+      rawdigest=$(exiftool $exiftool_extra_parms "$srcdir/$trgt" -all= -o - | md5sum | cut -d ' ' -f 1 ; exit ${PIPESTATUS[0]})
+      if [ $? -ne 0 ] && [ $quiet -eq 1 ]; then
          failed=$((failed+1))
-         echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
-         echo “Failure, press Ctrl-C to quit or any key to continue”
-         read garbage
+         if [ $quiet -eq 1 ]; then
+            echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
+            echo "Failure, press Ctrl-C to quit or any key to continue"
+            read garbage
+         fi
       else
-         exiftool -m -overwrite_original_in_place "$destdir/$trgt.JPG" -rawimagedigest="$rawdigest"
+         exiftool $exiftool_extra_parms -overwrite_original_in_place "$destdir/$trgt.JPG" -rawimagedigest="$rawdigest"
          if [ $? -ne 0 ]; then
             failed=$((failed+1))
-            echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
-            echo “Failure, press Ctrl-C to quit or any key to continue”
-            read garbage
+            if [ $quiet -eq 1 ]; then
+               echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
+               echo "Failure, press Ctrl-C to quit or any key to continue"
+               read garbage
+            fi
          else
             processed=$((processed+1))
          fi
