@@ -6,7 +6,7 @@ exiftool -a -X -n ./2023/06/15/DSC00259.ARW
 
 # Delete in camera JPG (we assume that it's an in-camera jpeg if it's next to a RAW with the same base name)
 
- find . -iname "*.ARW" -exec sh -c 'rm -f `dirname {}``basename {} .ARW`.JPG' \;
+ find . -iname "*.ARW" -exec sh -c 'rm -f `dirname {}`/`basename {} .ARW`.JPG' \;
 
 TODO:
 
