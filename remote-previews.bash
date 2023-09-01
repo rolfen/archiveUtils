@@ -4,6 +4,8 @@ scriptname=`basename "$0"`
 # dstdir=/home/rolf/photo/previews/2023
 # maxtransfer=1G
 
+unset remotedir
+
 Help()
 {
    # Display Help
@@ -21,7 +23,7 @@ Help()
 }
 
 # Get the options
-while getopts "hs:d:t:" option; do
+while getopts "hs:d:t:l:" option; do
    case $option in
       h) # display Help
          Help
@@ -36,16 +38,18 @@ while getopts "hs:d:t:" option; do
    esac
 done
 
-: ${remotedir:?Please specify remote source}
-: ${tmpdir:?Please specify temporary directory}
-: ${dstdir:?Please specify destination directory}
-: ${maxtransfer:?Please specify transfer limit}
+: ${tmpdir:?Specify temporary directory}
+: ${dstdir:?Specify destination directory}
 
 #this script relies on the other scripts skipping empty source files or files which already have previews.
 
-rclone copy $remotedir $tmpdir --progress --ignore-existing --max-transfer $maxtransfer
+if [ ! -z "$remotedir" ]; then
+	: ${maxtransfer:?Transfer limit is required}
+	rclone copy $remotedir $tmpdir --progress --ignore-existing --max-transfer $maxtransfer
+fi
+
 ./previews.bash -s $tmpdir -d $dstdir
 ./previews-rawdigest.bash -c -s $tmpdir -d $dstdir
-find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW") -size +1 -exec bash -c 'echo  > "${0}"' {} \;
+find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 -exec bash -c 'echo  > "${0}"' {} \;
 ./previews-vid.bash -s $tmpdir -d $dstdir
-find $tmpdir -type f \( -iname "*.MTS" -o -iname "*.AVI" -o -iname "*.MOV" -o -iname "*.MP4") -size +1 -exec bash -c 'echo  > "${0}"' {} \;
+find $tmpdir -type f \( -iname "*.MTS" -o -iname "*.AVI" -o -iname "*.MOV" -o -iname "*.MP4" \) -size +1 -exec bash -c 'echo  > "${0}"' {} \;
