@@ -2,7 +2,6 @@
 
 scriptname=`basename "$0"`
 recalculate=0 #default: true
-dryrun=1 #default: false
 quiet=1
 processed=0
 failed=0
@@ -15,20 +14,19 @@ Help()
    # Display Help
    echo "Recursively extract previews from raw images"
    echo
-   echo "Syntax: $scriptname [-s|d|c|t|h|q]"
+   echo "Syntax: $scriptname [-s|d|c|h|q]"
    echo
    echo "options:"
    echo " -s   Source dir"
    echo " -d   Destination dir"
    echo " -c   Skip targets that already have a checksum"
-   echo " -t   Dry run"   
    echo " -q   Quiet output"
    echo " -h   Print this Help"
    echo
 }
 
 # Get the options
-while getopts "s:d:cthq" option; do
+while getopts "s:d:chq" option; do
    case $option in
       h) # display Help
          Help
@@ -39,7 +37,6 @@ while getopts "s:d:cthq" option; do
          destdir=$OPTARG;;
       c) # "continue mode", skip targets which already have a checksum
          recalculate=1;;
-      t) dryrun=0;;
       q) quiet=0;;
      \?) # Invalid option
          echo "Error: Invalid option"
@@ -64,7 +61,6 @@ do
    if [ $quiet -eq 1 ]; then
       echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
    fi
-	mkdir -p `dirname $destdir/$trgt`
    skip=1
    if [ $recalculate -eq 1 ] && [ -f "$destdir/$trgt.JPG" ]; then
       # target present and recalculate is off: skip if we already have a checksum
@@ -74,24 +70,16 @@ do
    fi
 
 	if [ $skip -eq 1 ]; then
-      cmd='cat '
-      cmd+="$srcdir/$trgt"
-      cmd+=' |exiftool -m -overwrite_original_in_place '
-      cmd+="$destdir/$trgt.JPG"
-      cmd+=' -rawimagedigest=`exiftool -m - -all= -o - | md5sum`'
-      if [ $dryrun -eq 1 ]; then
-         eval $cmd
-         if [ $? -ne 0 ]; then
-            failed=$((failed+1))
-            echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
-            echo “Failure, press Ctrl-C to quit or any key to continue”
-            read garbage
-         else
-            processed=$((processed+1))
-         fi
-         # cat $srcdir/$trgt |exiftool -m -overwrite_original_in_place $destdir/$trgt.JPG -rawimagedigest=`exiftool - -all= -o - | md5sum`
+      mkdir -p `dirname $destdir/$trgt`
+      rawdigest=`exiftool -m "$srcdir/$trgt" -all= -o - | md5sum | cut -d ' ' -f 1`
+      exiftool -m -overwrite_original_in_place "$destdir/$trgt.JPG" -rawimagedigest="$rawdigest"
+      if [ $? -ne 0 ]; then
+         failed=$((failed+1))
+         echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
+         echo “Failure, press Ctrl-C to quit or any key to continue”
+         read garbage
       else
-         echo $cmd
+         processed=$((processed+1))
       fi
    else
       skipped=$((skipped+1))
