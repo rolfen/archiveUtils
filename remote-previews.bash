@@ -1,15 +1,16 @@
 scriptname=`basename "$0"`
-tmpdir=/home/rolf/photo/archive/2023
-remotedir=b2ro:Droppit/ArchivePhoto/2023
-dstdir=/home/rolf/photo/previews/2023
-maxtransfer=4G
+# tmpdir=/home/rolf/photo/archive/2023
+# remotedir=b2ro:Droppit/ArchivePhoto/2023
+# dstdir=/home/rolf/photo/previews/2023
+# maxtransfer=1G
 
 Help()
 {
    # Display Help
    echo "Manages preview creation from remote archive"
    echo
-   echo "Syntax: $scriptname [-s|d|h]"
+   echo "Syntax: $scriptname [-s|t|d|l|h]"
+   echo "Eg: $scriptname -s b2ro:Droppit/ArchivePhoto/2023 -t ../archive/2023 -d ../previews/2023 -l 4G"
    echo "options:"
    echo " -s   Rclone pathspec of remote source"
    echo " -t   Temporary dir"
@@ -20,7 +21,7 @@ Help()
 }
 
 # Get the options
-while getopts "hs:d:" option; do
+while getopts "hs:d:t:" option; do
    case $option in
       h) # display Help
          Help
@@ -33,6 +34,11 @@ while getopts "hs:d:" option; do
          exit;;
    esac
 done
+
+: ${remotedir:?Please specify remote source}
+: ${tmpdir:?Please specify temporary directory}
+: ${dstdir:?Please specify destination directory}
+: ${maxtransfer:?Please specify transfer limit}
 
 #this script relies on the other scripts skipping empty source files or files which already have previews.
 
