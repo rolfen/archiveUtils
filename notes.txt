@@ -1,3 +1,11 @@
+MISC NOTES:
+
 # This is a nice way to extract exif as xml:
 
 exiftool -a -X -n ./2023/06/15/DSC00259.ARW
+
+TODO:
+
+ - Test test how scripts handles Ctrl-C or being killed, specifically test for writing incompleted files
+ - Test consistency of checksums across platforms
+ - previews-rawdigest on linux dumps garbage into the shell
