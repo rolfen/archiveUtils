@@ -1,3 +1,5 @@
+# or just use the script remote-previews
+
 # step 1
 # copy originals from b2 remote to local directory
 # Example:
