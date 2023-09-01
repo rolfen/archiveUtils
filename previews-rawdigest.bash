@@ -71,8 +71,8 @@ do
 
 	if [ $skip -eq 1 ]; then
       mkdir -p `dirname $destdir/$trgt`
-      exiftool -m "$srcdir/$trgt" -all= -o - | md5sum | cut -d ' ' -f 1 | read rawdigest 
-      if [ ${PIPESTATUS[0]} -ne 0 ]; then
+      rawdigest=$(exiftool -m "$srcdir/$trgt" -all= -o - | md5sum | cut -d ' ' -f 1 ; exit ${PIPESTATUS[0]})
+      if [ $? -ne 0 ]; then
          failed=$((failed+1))
          echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
          echo “Failure, press Ctrl-C to quit or any key to continue”
