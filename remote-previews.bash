@@ -22,6 +22,12 @@ Help()
    echo
 }
 
+Truncate()
+{
+   echo > $1
+   echo $1
+}
+
 # Get the options
 while getopts "hs:d:t:l:" option; do
    case $option in
@@ -53,10 +59,10 @@ echo "Previews"
 echo "Raw digests"
 ./previews-rawdigest.bash -q -c -s $tmpdir -d $dstdir
 echo "Truncating in-camera JPEGs"
-find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 -exec sh -c 'echo  > `dirname {}`/`basename {} .ARW`.JPG; echo `dirname {}`/`basename {} .ARW`.JPG' \;
+find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 | while read file; do Truncate `echo "$file" | sed 's/\(.*\)\..*/\1.JPG/'`; done
 echo "Truncating originals"
-find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 -exec bash -c 'echo  > "${0}"; echo  "${0}"' {} \;
+find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 | while read file; do Truncate "$file" ; done
 echo "Video previews"
 ./previews-vid.bash -s $tmpdir -d $dstdir
 echo "Truncating original videos"
-find $tmpdir -type f \( -iname "*.MTS" -o -iname "*.AVI" -o -iname "*.MOV" -o -iname "*.MP4" \) -size +1 -exec bash -c 'echo  > "${0}"; echo  "${0}"' {} \;
+find $tmpdir -type f \( -iname "*.MTS" -o -iname "*.AVI" -o -iname "*.MOV" -o -iname "*.MP4" \) -size +1 | while read file; do Truncate "$file" ; done
