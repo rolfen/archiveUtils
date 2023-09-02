@@ -52,10 +52,10 @@ echo "Previews"
 ./previews.bash -s $tmpdir -d $dstdir
 echo "Raw digests"
 ./previews-rawdigest.bash -q -c -s $tmpdir -d $dstdir
-echo "Truncating originals"
-find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 -exec bash -c 'echo  > "${0}"; echo  "${0}"' {} \;
 echo "Truncating in-camera JPEGs"
 find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 -exec sh -c 'echo  > `dirname {}`/`basename {} .ARW`.JPG; echo `dirname {}`/`basename {} .ARW`.JPG' \;
+echo "Truncating originals"
+find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 -exec bash -c 'echo  > "${0}"; echo  "${0}"' {} \;
 echo "Video previews"
 ./previews-vid.bash -s $tmpdir -d $dstdir
 echo "Truncating original videos"
