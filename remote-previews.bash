@@ -61,5 +61,5 @@ echo "Please wait for raw digests"
 find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 > >( tee >(wc -l | xargs echo "In cam JPEGS truncated:") >(while read file; do Truncate `echo "$file" | sed 's/\(.*\)\..*/\1.JPG/'`; done) > /dev/null ) 
 find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 > >( tee >(wc -l | xargs echo "Originals truncated:") >(while read file; do Truncate "$file" ; done) ) 
 echo "Please wait for video previews"
-./previews-vid.bash -s $tmpdir -d $dstdir
+./previews-vid.bash -b -s $tmpdir -d $dstdir
 find $tmpdir -type f \( -iname "*.MTS" -o -iname "*.AVI" -o -iname "*.MOV" -o -iname "*.MP4" \) -size +1 > >(tee >(wc -l | xargs echo "Videos truncated:") >(while read file; do Truncate "$file" ; done)) 
