@@ -3,6 +3,7 @@ scriptname=`basename "$0"`
 # remotedir=b2ro:Droppit/ArchivePhoto/2023
 # dstdir=/home/rolf/photo/previews/2023
 # maxtransfer=1G
+truncate_counter=0
 
 unset remotedir
 
@@ -25,7 +26,6 @@ Help()
 Truncate()
 {
    echo > $1
-   echo $1
 }
 
 # Get the options
@@ -54,15 +54,12 @@ if [ ! -z "$remotedir" ]; then
 	rclone copy $remotedir $tmpdir --progress --ignore-existing --max-transfer $maxtransfer
 fi
 
-echo "Previews"
+echo "Please wait for previews"
 ./previews.bash -s $tmpdir -d $dstdir
-echo "Raw digests"
+echo "Please wait for raw digests"
 ./previews-rawdigest.bash -q -c -s $tmpdir -d $dstdir
-echo "Truncating in-camera JPEGs"
-find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 | while read file; do Truncate `echo "$file" | sed 's/\(.*\)\..*/\1.JPG/'`; done
-echo "Truncating originals"
-find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 | while read file; do Truncate "$file" ; done
-echo "Video previews"
+find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 > >( tee >(wc -l | xargs echo "In cam JPEGS truncated:") >(while read file; do Truncate `echo "$file" | sed 's/\(.*\)\..*/\1.JPG/'`; done) > /dev/null ) 
+find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 > >( tee >(wc -l | xargs echo "Originals truncated:") >(while read file; do Truncate "$file" ; done) ) 
+echo "Please wait for video previews"
 ./previews-vid.bash -s $tmpdir -d $dstdir
-echo "Truncating original videos"
-find $tmpdir -type f \( -iname "*.MTS" -o -iname "*.AVI" -o -iname "*.MOV" -o -iname "*.MP4" \) -size +1 | while read file; do Truncate "$file" ; done
+find $tmpdir -type f \( -iname "*.MTS" -o -iname "*.AVI" -o -iname "*.MOV" -o -iname "*.MP4" \) -size +1 > >(tee >(wc -l | xargs echo "Videos truncated:") >(while read file; do Truncate "$file" ; done)) 

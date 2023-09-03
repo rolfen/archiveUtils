@@ -61,7 +61,7 @@ fi
 for trgt in $(cd $srcdir && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) );
 do
    # if [ $quiet -eq 1 ]; then
-      echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
+   #   echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
    # fi
    skip=1
    if [ $recalculate -eq 1 ] && [ -f "$destdir/$trgt.JPG" ]; then

@@ -52,7 +52,7 @@ fi
 
 for trgt in $(cd $srcdir && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) );
 do
-	echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
+	# echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
 	mkdir -p `dirname $destdir/$trgt`
 	if [ ! -f "$destdir/$trgt.JPG" ]; then
 		cat $srcdir/$trgt | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > $destdir/$trgt.JPG
