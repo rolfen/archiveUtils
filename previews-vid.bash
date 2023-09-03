@@ -45,12 +45,12 @@ if [[ ! -v destdir ]];
 	read destdir
 fi
 
-for trgt in $(cd $srcdir && find . -type f \( -size +1  -iname \*.MTS -o -size +1 -iname \*.AVI -o -size +1 -iname \*.MOV -o -size +1 -iname \*.MP4 \) );
+find "$srcdir" -type f \( -size +1  -iname \*.MTS -o -size +1 -iname \*.AVI -o -size +1 -iname \*.MOV -o -size +1 -iname \*.MP4 \) -print0 | while read -d $'\0' trgt;
 do
    echo "$srcdir/$trgt >> $destdir/$trgt.webm+txt" 
    mkdir -p `dirname $destdir/$trgt`
    if [ ! -f "$destdir/$trgt.webm" ]; then
-      ffmpeg -n -hide_banner -loglevel error -stats -vsync vfr -i $srcdir/$trgt -c:v libvpx-vp9 -row-mt 1 -deadline good -crf 36 -c:a libopus -b:a 32k -vf "fps=6,scale=420:-1" "$destdir/$trgt.webm" 
+      ffmpeg -n -hide_banner -loglevel error -stats -vsync vfr -i "$srcdir/$trgt" -c:v libvpx-vp9 -row-mt 1 -deadline good -crf 36 -c:a libopus -b:a 32k -vf "fps=6,scale=420:-1" "$destdir/$trgt.webm" < /dev/null
       if [ $? -ne 0 ]; then
         echo "Deleting partial output";
         failed=$((failed+1))
