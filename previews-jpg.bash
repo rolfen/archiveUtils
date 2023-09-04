@@ -12,7 +12,7 @@ skipped=0
 Help()
 {
    # Display Help
-   echo "Recursively extract previews from raw images"
+   echo "Recursively resample JPEGs"
    echo
    echo "Syntax: $scriptname [-s|d|q|h]"
    echo "options:"
@@ -53,14 +53,20 @@ if [[ ! -v destdir ]];
 	read destdir
 fi
 
+while read fn; do
+  mkdir -p $(dirname "../previews/$fn")
+  dcraw -e -c -h  "../archive/$fn" | djpeg -scale 6/8 -fast| pnmscalefixed -pixels 750000 |cjpeg -quality 75 > "../previews/$fn" 
+done < <(cd ../archive && find .  -type f \( -iname "*.JPG" -o -iname "*.JPEG" \) -size +100  )
+
+
 while read -d $'\0' trgt
 do
    if [ $quiet -eq 1 ]; then
-   	echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
+   	echo "$srcdir/$trgt >> $destdir/$trgt" 
    fi
 	mkdir -p $(dirname "$destdir/$trgt")
 	if [ ! -f "$destdir/$trgt.JPG" ]; then
-		cat "$srcdir/$trgt" | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > "$destdir/$trgt.JPG" 
+	 	dcraw -e -c -h  "$srcdir/$fn" | djpeg -scale 6/8 -fast| pnmscalefixed -pixels 750000 |cjpeg -quality 75 > "$destdir/$fn" 
       if [ $? -ne 0 ]; then
          failed=$((failed+1))
       else
@@ -69,6 +75,6 @@ do
    else
       skipped=$((skipped+1))
 	fi
-done < <(cd "$srcdir" && find . -type f -size +1 \( -iname \*.ORF -o -iname \*.ARW \) -print0 )
+done < <(cd "$srcdir" && find . -type f -size +1 \( -iname \*.JPG -o -iname \*.JPEG \) -print0 )
 
 echo "Processed: $processed. Failed: $failed. Skipped: $skipped."
