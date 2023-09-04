@@ -50,14 +50,12 @@ if [[ ! -v destdir ]];
 	read destdir
 fi
 
-for trgt in $(cd $srcdir && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) );
+while read -d $'\0' trgt
 do
-	# echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
-	mkdir -p `dirname $destdir/$trgt`
+	echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
+	mkdir -p $(dirname "$destdir/$trgt")
 	if [ ! -f "$destdir/$trgt.JPG" ]; then
-		cat $srcdir/$trgt | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > $destdir/$trgt.JPG
-		# exiftool  -m $srcdir/$trgt  -b -previewimage -ext ORF -ext ARW > $destdir/$trgt.JPG 
-		# exiftool  -overwrite_original -m -tagsfromfile $srcdir/$trgt "-all:all>all:all" $destdir/$trgt.JPG
+		cat "$srcdir/$trgt" | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > "$destdir/$trgt.JPG" 
       if [ $? -ne 0 ]; then
          failed=$((failed+1))
       else
@@ -66,6 +64,6 @@ do
    else
       skipped=$((skipped+1))
 	fi
-done;
+done < <(cd "$srcdir" && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) -print0 )
 
 echo "Processed: $processed. Failed: $failed. Skipped: $skipped."

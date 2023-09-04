@@ -58,21 +58,21 @@ if [[ ! -v destdir ]];
 	read destdir
 fi
 
-for trgt in $(cd $srcdir && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) );
+while read -d $'\0' trgt
 do
-   # if [ $quiet -eq 1 ]; then
-   #   echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
-   # fi
+   if [ $quiet -eq 1 ]; then
+      echo "$srcdir/$trgt >> $destdir/$trgt.JPG" 
+   fi
    skip=1
    if [ $recalculate -eq 1 ] && [ -f "$destdir/$trgt.JPG" ]; then
       # target present and recalculate is off: skip if we already have a checksum
-      if [ `exiftool $exiftool_extra_parms -rawimagedigest $destdir/$trgt.JPG | wc -c` -gt 0 ]; then
+      if [ `exiftool $exiftool_extra_parms -rawimagedigest "$destdir/$trgt.JPG" | wc -c` -gt 0 ]; then
          skip=0
       fi
    fi
 
 	if [ $skip -eq 1 ]; then
-      mkdir -p `dirname $destdir/$trgt`
+      mkdir -p `dirname "$destdir/$trgt"`
       rawdigest=$(exiftool $exiftool_extra_parms "$srcdir/$trgt" -all= -o - | md5sum | cut -d ' ' -f 1 ; exit ${PIPESTATUS[0]})
       if [ $? -ne 0 ] && [ $quiet -eq 1 ]; then
          failed=$((failed+1))
@@ -97,7 +97,7 @@ do
    else
       skipped=$((skipped+1))
 	fi
-done;
+done < <(cd "$srcdir" && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) -print0 )
 
 echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
 
