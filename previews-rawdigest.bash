@@ -97,7 +97,7 @@ do
    else
       skipped=$((skipped+1))
 	fi
-done < <(cd "$srcdir" && find . -type f \( -size +1 -iname \*.ORF -o -size +1 -iname \*.ARW \) -print0 )
+done < <(cd "$srcdir" && find . -type f -size +1 \(  -iname \*.ORF -o -iname \*.ARW  \) -print0 )
 
 echo "Processed: $processed. Failed: $failed. Skipped: $skipped"
 
