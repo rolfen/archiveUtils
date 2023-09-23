@@ -1,6 +1,6 @@
 # Import from /run/media/rolf... to working dir and organize into subfolders by date taken (YYYY/MM/DD)
 # use -ext XXX to select file extensions
 
-exiftool -progress -ext ARW -ext ORF -ext xmp -r -m -d %Y/%m/%d "-Directory<DateTimeOriginal" /run/media/rolf/disk/PRIVATE/AVCHD/BDMV/STREAM/
+exiftool -progress -ext MTS -ext ARW -ext ORF -ext xmp -r -m -d %Y/%m/%d "-Directory<DateTimeOriginal" /run/media/rolf/disk/PRIVATE/AVCHD/BDMV/STREAM/
 
 
