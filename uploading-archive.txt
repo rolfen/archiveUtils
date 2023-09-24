@@ -1,3 +1,5 @@
 # Local archive can be moved or copied to cloud storage. Example:
 
-rclone moveto b2:Droppit/ArchivePhoto/2023/04 ./2023/04 --min-size 2B --progress --include "*.{arw,mts,xmp,orf}" --ignore-case --bwlimit 60 --immutable
+rclone moveto b2:Droppit/ArchivePhoto/2023/04 ./2023/04 --min-size 2B --progress --include "*.{arw,mts,xmp,orf}" --ignore-case --bwlimit 60
+
+# Note: As tempting as it is, --immutable is avoided because rclone can generated partially uploaded files on the remote when upload is interrupted (despite what the doc says) which would need to be resumed.
