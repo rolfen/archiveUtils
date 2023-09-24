@@ -8,7 +8,9 @@ failed=0
 skipped=0
 exiftool_extra_parms=""
 
-# limitations: does not support spaces in dirnames
+# todo: 
+# performance: list1=originals list2=previews which already have a rawdigest, find list3=list1-list2 that's what we want to process if -c is set
+# but i guess first we need to write some tests
 
 Help()
 {
