@@ -1,3 +1,3 @@
-# after extracting previews, local archive can be moved (or copied)
+# Local archive can be moved or copied to cloud storage. Example:
 
-rclone moveto /home/rolf/photo/archive/2021/04 b2ro:Droppit/ArchivePhoto/2021/04 --progress --min-size 2B --ignore-existing --include "*.{ARW,ORF,xmp}"
+rclone moveto b2:Droppit/ArchivePhoto/2023/04 ./2023/04 --min-size 2B --progress --include "*.{arw,mts,xmp,orf}" --ignore-case --bwlimit 60 --immutable

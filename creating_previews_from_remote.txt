@@ -3,15 +3,17 @@
 # step 1
 # copy originals from b2 remote to local directory
 # Example:
-rclone copy b2ro:Droppit/ArchivePhoto/2021/04 /home/rolf/photo/archive/2021/04 --progress 
+rclone copy b2ro:Droppit/ArchivePhoto/2021/04 /home/rolf/photo/archive/2021/04 --progress --immutable
 
 # step 2
 # use previews.bash to extract previews from originals to another directory
 # run it again to make sure that all previews were extracted
+# also may want to run previews-rawdigest and previews-vid in the same way
 
 # step 3
 # replace originals with empty placeholders
 find . -name "*.ARW" -type f -exec bash -c 'echo  > "${0}"' {} \;
 find . -name "*.ORF" -type f -exec bash -c 'echo  > "${0}"' {} \;
+# also do it for MTS or any other format that you handled
 
-# goto step 1 until all files are copied (rclone in step 1 returns after completing checks with 0 transfers)
+# goto step 1, repeat until all files are copied, that is rclone in step 1 returns after completing checks with 0 transfers.
