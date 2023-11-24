@@ -7,6 +7,7 @@ processed=0
 failed=0
 quiet=1
 skipped=0
+resample=1
 
 
 Help()
@@ -18,13 +19,14 @@ Help()
    echo "options:"
    echo " -s   Source dir (without trailing /)."
    echo " -d   Destination dir (without trailing /)."
+   echo " -m   Resample from RAW data - DOES NOT COPY EXIF."
    echo " -q   Quiet mode."
    echo " -h   Print this Help."
    echo
 }
 
 # Get the options
-while getopts "hqs:d:" option; do
+while getopts "hqms:d:" option; do
    case $option in
       h) # display Help
          Help
@@ -35,6 +37,8 @@ while getopts "hqs:d:" option; do
          destdir=$OPTARG;;
       q) # Quiet mode
          quiet=0;;
+      m) # Resample original
+         resample=0;;
      \?) # Invalid option
          echo "Error: Invalid option"
          exit;;
@@ -60,7 +64,11 @@ do
    fi
 	mkdir -p $(dirname "$destdir/$trgt")
 	if [ ! -f "$destdir/$trgt.JPG" ]; then
-		cat "$srcdir/$trgt" | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > "$destdir/$trgt.JPG" 
+      if [ $resample -eq 0 ]; then
+         dcraw -c -h  "$srcdir/$trgt" | magick convert -resize 1000x1000 - - | cjpeg -dct fast -quality 80 > "$destdir/$trgt.JPG"
+      else
+   		cat "$srcdir/$trgt" | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > "$destdir/$trgt.JPG" 
+      fi
       if [ $? -ne 0 ]; then
          failed=$((failed+1))
       else
@@ -69,6 +77,6 @@ do
    else
       skipped=$((skipped+1))
 	fi
-done < <(cd "$srcdir" && find . -type f -size +1 \( -iname \*.ORF -o -iname \*.ARW -o -iname \*.DNG \) -print0 )
+done < <(cd "$srcdir" && find . -type f -size +1 \( -iname \*.ORF -o -iname \*.ARW -o -iname \*.DNG -o -iname \*.TIF \) -print0 )
 
 echo "Processed: $processed. Failed: $failed. Skipped: $skipped."
