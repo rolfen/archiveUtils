@@ -55,7 +55,7 @@ if [ ! -z "$remotedir" ]; then
 fi
 
 echo "Please wait for previews"
-./previews.bash -q -s $tmpdir -d $dstdir
+./previews.bash -q -s $tmpdir -d $dstdir -r -e
 echo "Please wait for raw digests"
 ./previews-rawdigest.bash -q -c -s $tmpdir -d $dstdir
 find $tmpdir -type f \( -iname "*.ORF" -o -iname "*.ARW" \) -size +1 > >( tee >(wc -l | xargs echo "In cam JPEGS truncated:") >(while read file; do Truncate `echo "$file" | sed 's/\(.*\)\..*/\1.JPG/'`; done) > /dev/null ) 

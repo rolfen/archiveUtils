@@ -1,32 +1,38 @@
 #/bin/bash
 
 # requires exiftool
+# requires dcraw, imagemagick, djpeg for the -r option
 
 scriptname=`basename "$0"`
+
+# options (defaults)
+quiet=1
+resample=1
+copyexif=1
+
+#counters
 processed=0
 failed=0
-quiet=1
 skipped=0
-resample=1
-
 
 Help()
 {
    # Display Help
    echo "Recursively extract previews from raw images"
    echo
-   echo "Syntax: $scriptname [-s|d|q|h]"
+   echo "Syntax: $scriptname [-s|d|q|h|r|e]"
    echo "options:"
    echo " -s   Source dir (without trailing /)."
    echo " -d   Destination dir (without trailing /)."
-   echo " -m   Resample from RAW data - DOES NOT COPY EXIF."
+   echo " -r   Sample preview from RAW"
+   echo " -e   Copy exif data."
    echo " -q   Quiet mode."
    echo " -h   Print this Help."
    echo
 }
 
 # Get the options
-while getopts "hqms:d:" option; do
+while getopts "hqres:d:" option; do
    case $option in
       h) # display Help
          Help
@@ -37,8 +43,10 @@ while getopts "hqms:d:" option; do
          destdir=$OPTARG;;
       q) # Quiet mode
          quiet=0;;
-      m) # Resample original
+      r) # Resample original
          resample=0;;
+      e) # Copy Exif
+         copyexif=0;;
      \?) # Invalid option
          echo "Error: Invalid option"
          exit;;
@@ -64,11 +72,17 @@ do
    fi
 	mkdir -p $(dirname "$destdir/$trgt")
 	if [ ! -f "$destdir/$trgt.JPG" ]; then
+
       if [ $resample -eq 0 ]; then
          dcraw -c -h  "$srcdir/$trgt" | magick convert -resize 1000x1000 - - | cjpeg -dct fast -quality 80 > "$destdir/$trgt.JPG"
       else
-   		cat "$srcdir/$trgt" | exiftool  -m - -b -previewimage | exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" - > "$destdir/$trgt.JPG" 
+   		exiftool  -m "$srcdir/$trgt" -b -previewimage > "$destdir/$trgt.JPG" 
       fi
+
+      if [ $copyexif -eq 0 ]; then
+         exiftool  -m -tagsfromfile "$srcdir/$trgt" "-all:all>all:all" "$destdir/$trgt.JPG" -overwrite_original_in_place 
+      fi
+
       if [ $? -ne 0 ]; then
          failed=$((failed+1))
       else
