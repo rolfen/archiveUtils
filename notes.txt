@@ -1,3 +1,14 @@
+DOC:
+
+Naming convention of disk drives:
+
+Ex: HG1072F
+First 2 letters are derived from the disk brand as written on the hard disk
+  If the brand is multiple words, then the initials of the 2 first words. Ex: Western Digital -> WD
+  If the brand is one word or an acronym, then the first 2 consonnant of the word. Ex: HGST -> HG
+Next 2/3/+ letters is truncated capacity in 100s of GB. For example a 1TB disk is 10. 256 GB is 2. Otherwise whatever the prefix indicates, for example 1TB -> 1T
+Last 3 letters are the last 3 letters of the serial number
+
 MISC NOTES:
 
 # This is a nice way to extract exif as xml:
@@ -10,6 +21,6 @@ exiftool -a -X -n ./2023/06/15/DSC00259.ARW
 
 TODO:
 
- - Test test how scripts handles Ctrl-C or being killed, specifically test for writing incompleted files
+ - Test test how scripts handles Ctrl-C or being killed, specifically test for writing incompleted files (use yarn?)
  - Test consistency of checksums across platforms
  - previews-rawdigest on linux dumps garbage into the shell
