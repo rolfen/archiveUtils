@@ -2,12 +2,12 @@ DOC:
 
 Naming convention of disk drives:
 
-Ex: HG1072F
+Ex: WD320-NDN
 First 2 letters are derived from the disk brand as written on the hard disk
   If the brand is multiple words, then the initials of the 2 first words. Ex: Western Digital -> WD
-  If the brand is one word or an acronym, then the first 2 consonnant of the word. Ex: HGST -> HG
-Next 2/3/+ letters is truncated capacity in 100s of GB. For example a 1TB disk is 10. 256 GB is 2. Otherwise whatever the prefix indicates, for example 1TB -> 1T
-Last 3 letters are the last 3 letters of the serial number
+  If the brand is one word or an acronym, then the first 2 consonnant of the word. Ex: HGST -> HG , Seagate -> SG
+Next 2/3/+ letters is truncated capacity in GB or whatever the prefix indicates, for example 1TB -> 1T
+Last 3 letters are the last 3 letters of the serial number (preferably preceded by a dash)
 
 MISC NOTES:
 

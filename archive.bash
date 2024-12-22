@@ -7,6 +7,6 @@ scriptname=`basename "$0"`
 if [[ $# -ne 2 ]]; then
     echo "Usage: $scriptname /source/dir /archive/dir"
 else
-	(cd "$2"; exiftool -progress -ext MTS -ext ARW -ext ORF -ext xmp -r -m -d %Y/%m/%d "-Directory<DateTimeOriginal" "$1")
+	(cd "$2"; exiftool -progress -ext MOV -ext JPEG -ext JPG -ext MTS -ext ARW -ext ORF -ext xmp -r -m -d %Y/%m/%d "-Directory<CreateDate" "-Directory<DateTimeOriginal" "$1")
 fi
 
